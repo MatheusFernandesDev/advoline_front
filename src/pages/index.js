@@ -6,8 +6,9 @@ import {
   VStack,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import Link from "next/link";
 
-export default function WithBackgroundImage() {
+export default function Home() {
   return (
     <Flex
       w={"full"}
@@ -34,22 +35,26 @@ export default function WithBackgroundImage() {
             escritórios de Advocacia.
           </Text>
           <Stack direction={"row"}>
-            <Button
-              bg={"blue.400"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "#778899" }}
-            >
-              Fazer Login
-            </Button>
-            <Button
-              bg={"whiteAlpha.300"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "whiteAlpha.500" }}
-            >
-              Cadastrar Usuário
-            </Button>
+            <Link href={"/login"}>
+              <Button
+                bg={"blue.400"}
+                rounded={"full"}
+                color={"white"}
+                _hover={{ bg: "#778899" }}
+              >
+                Fazer Login
+              </Button>
+            </Link>
+            <Link href={"/register"}>
+              <Button
+                bg={"whiteAlpha.300"}
+                rounded={"full"}
+                color={"white"}
+                _hover={{ bg: "whiteAlpha.500" }}
+              >
+                Cadastrar Usuário
+              </Button>
+            </Link>
           </Stack>
         </Stack>
       </VStack>
