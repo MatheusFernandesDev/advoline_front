@@ -1,5 +1,9 @@
+import { useState } from "react";
+import { useRouter } from "next/router";
 import TextInput from "@/components/TextInput";
 import SelectOption from "@/components/SelectOption";
+import PasswordInput from "@/components/PasswordInput";
+import Button from "@/components/Button";
 import {
   Flex,
   Box,
@@ -9,23 +13,73 @@ import {
   Checkbox,
   Stack,
   Link,
-  Button,
   Heading,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+
+import api from "@/services/api";
 
 export default function Register() {
+  const toast = useToast();
+  const router = useRouter();
+  //USE STATES
+
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState(-1);
+  const [password, setPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
 
   const optinsUserType = [
     { id: 1, name: "Administrador" },
     { id: 2, name: "Assistente" },
   ];
+
+  function clearHandler() {
+    setUser("");
+    setNameFull("");
+    setEmail("");
+    setTypeUSer(-1);
+    setPassword("");
+    setConfirmPassword("");
+  }
+
+  function saveHandler() {
+    setLoading(true);
+    api
+      .post("/user", {
+        name,
+        email,
+        id_user_type: userType,
+        password,
+        ConfirmPassword,
+        validateStatus: (status) => {
+          return (status = 200);
+        },
+      })
+      .then(() => {
+        clearHandler();
+        toast({
+          title: "Usuário criado com sucesso",
+          status: "success",
+        });
+        router.push("/login");
+      })
+      .catch((err) => {
+        if (err.response?.data?.errors) {
+          const responseErrors = err.response.data.errors;
+          setErrors(responseErrors);
+        }
+        return toast({ title: "Erro ao criar Usuário", status: "error" });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <Flex
@@ -73,13 +127,21 @@ export default function Register() {
                 errors={errors}
                 param={"id_user_type"}
               />
-              <Button
-                bg={"blue.400"}
-                color={"white"}
-                _hover={{
-                  bg: "blue.500",
-                }}
-              >
+              <PasswordInput
+                onChange={(event) => setPassword(event.target.value)}
+                value={password}
+                name_field={"Senha"}
+                errors={errors}
+                param="password"
+              />
+              <PasswordInput
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                value={ConfirmPassword}
+                name_field={"Confirmar Senha"}
+                errors={errors}
+                param="confirmPassword"
+              />
+              <Button width={"300px"} isLoading={loading} onClick={saveHandler}>
                 Finalizar Cadastro
               </Button>
             </Stack>

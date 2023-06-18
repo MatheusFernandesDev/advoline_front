@@ -23,7 +23,14 @@ const TextInput = ({
 
   useEffect(() => {
     if (errors) {
-      setError(errors.find((err) => err.path === param));
+      const formatErros = errors.map((erros) => {
+        return {
+          msg: erros.msg,
+          param: erros.path,
+        };
+      });
+
+      setError(formatErros.find((err) => err.param === param));
     }
   }, [errors, param]);
 
@@ -60,7 +67,7 @@ const TextInput = ({
         marginLeft={error ? "5px" : "0"}
         display={!error && "none"}
       >
-        {error ? t(`${error.msg}`) : ""}
+        {error ? `${error.msg}` : ""}
       </Text>
     </Container>
   );

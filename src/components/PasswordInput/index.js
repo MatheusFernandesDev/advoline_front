@@ -1,30 +1,35 @@
-import React, { useEffect, useState } from "react";
-import randomString from "../../helpers/randomString";
-import { Container, Select, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Icon,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
+} from "@chakra-ui/react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import randomString from "@/helpers/randomString";
 
-export default function SelectOptionInput({
+const PasswordInput = ({
   style,
   required,
-  initial_state,
-  disableFirstOption,
   name_field,
   name_placeholder,
+  value,
   errors,
   grid_width,
-  grid_height,
-  options = [],
-  hidden,
   disabled,
   param = randomString(5),
-  onChange,
   ...rest
-}) {
+}) => {
   name_field = name_field || "";
   name_placeholder =
     name_placeholder ||
     `Selecione ${name_field.toLowerCase?.() || "uma opção"}`;
 
   const [error, setError] = useState(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (errors) {
@@ -49,31 +54,28 @@ export default function SelectOptionInput({
       <Text mb="8px" color={error ? "darkred" : "black"}>
         {name_field}
       </Text>
-      <Select
-        errors={error}
-        onFocus={() => setError(null)}
-        isDisabled={disabled}
-        backgroundColor="white"
-        border="1px solid #e5e5e5"
-        isInvalid={error}
-        errorBorderColor="darkred"
-        onChange={(event) => onChange(parseInt(event.target.value))}
-        {...rest}
-      >
-        <option
-          key={-1}
-          value={-1}
-          disabled={disableFirstOption}
-          required={required}
-        >
-          {name_placeholder}
-        </option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id} style={{ color: "black" }}>
-            {option.name}
-          </option>
-        ))}
-      </Select>
+      <InputGroup size="md">
+        <Input
+          isRequired={required}
+          type={show ? "text" : "password"}
+          value={value}
+          border="1px solid #e5e5e5"
+          backgroundColor="white"
+          isInvalid={error}
+          errorBorderColor="darkred"
+          onFocus={() => setError(null)}
+          {...rest}
+        />
+        <InputRightElement width="4.5rem">
+          <Button h="1.75rem" size="sm" onClick={() => setShow(!show)}>
+            {show ? (
+              <Icon as={AiOutlineEyeInvisible} />
+            ) : (
+              <Icon as={AiOutlineEye} />
+            )}
+          </Button>
+        </InputRightElement>
+      </InputGroup>
       <Text
         position="absolute"
         top="100%"
@@ -85,4 +87,6 @@ export default function SelectOptionInput({
       </Text>
     </Container>
   );
-}
+};
+
+export default PasswordInput;
